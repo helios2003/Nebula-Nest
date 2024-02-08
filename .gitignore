@@ -1,0 +1,4 @@
+dist/
+.env
+output/
+node_modules/
