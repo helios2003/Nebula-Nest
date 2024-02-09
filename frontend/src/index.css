@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.font-roboto {
+    font-family: 'Roboto', sans-serif; /* This is the font name you chose from Google Fonts */
+}
