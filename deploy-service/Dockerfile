@@ -8,11 +8,11 @@ RUN apt-get install -y nodejs && npm install -g typescript
 # Set working directory
 WORKDIR /home/app
 
-COPY clone.sh package*.json dist/ /home/app/
+COPY build.sh package*.json dist/ /home/app/
 RUN npm install
 
 # Set execute permissions to the script
-RUN chmod +x clone.sh
+RUN chmod +x build.sh
 
 # Set the entry point
-ENTRYPOINT [ "/app/clone.sh" ]
+ENTRYPOINT [ "home/app/build.sh" ]
