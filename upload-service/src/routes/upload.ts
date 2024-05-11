@@ -5,6 +5,7 @@ import { getFilePaths, uploadToS3 } from '../functions/aws'
 import { z } from 'zod'
 import { exec } from 'child_process';
 import path from 'path'
+import fs from 'fs'
 
 const uploadRouter = Router()
 const urlSchema = z.string().url()
@@ -18,14 +19,22 @@ uploadRouter.post('/upload', async (req, res) => {
                 msg: "Invalid input"
             })
         } else {
-            const url = urlResult.data
+
+            // get the necessary data required to clone the project
+            const url = urlResult.data;
+            const splitURL = url.split('/')
+            const len = splitURL.length
+            const username = splitURL[len - 2]
+            const projectName = splitURL[len - 1].replace('.git', '')
+
             const git: SimpleGit = simpleGit()
             let uploadUUID: string = uuidv4().substring(0, 8)
             console.log(uploadUUID)
            
             const batchFilePath = path.join(__dirname, 'clone.bat').replace(/\\/g, '/')
-           
-            exec(`cmd /c ${batchFilePath} "helios2003" "Fuego"`, (error, stdout, stderr) => {
+            
+            // this command checks if the repository size is too large to be cloned or not
+            exec(`cmd /c ${batchFilePath} ${username} ${projectName}`, (error, stdout, stderr) => {
                 if (error) {
                     console.error('Error executing batch file:', error)
                     res.status(500).json({
@@ -56,6 +65,8 @@ uploadRouter.post('/upload', async (req, res) => {
                     })
                     return
                 } else {
+                    // create the folder for the cloned repository
+                    fs.mkdirSync(`../output/${uploadUUID}`, { recursive: true })
                     git.clone(url, `../output/${uploadUUID}`)
                     const filePaths = getFilePaths(`../output/${uploadUUID}`)
                     uploadToS3(filePaths)

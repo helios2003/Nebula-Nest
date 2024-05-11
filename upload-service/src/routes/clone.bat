@@ -7,7 +7,7 @@ if "%~2"=="" (
 set "size="
 for /f "tokens=*" %%A in ('curl -s https://api.github.com/repos/%1/%2 2^> nul ^| findstr /C:"size"') do set "size=%%A"
 if not "%size%"=="" (
-    for /f "tokens=*" %%B in ("%size%") do echo %%B
+    for /f "tokens=2 delims=:" %%B in ("%size%") do echo %%B
 ) else (
     echo 0
 )
