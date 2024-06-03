@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { S3 } from 'aws-sdk';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '../.env' });
@@ -12,27 +11,26 @@ const s3Client = new S3({
     endpoint: process.env.AWS_URL ?? "",
 });
 
-export function getFilePaths(dirPath: string): string[] {
-    let filePaths: string[] = []
-
-    function walk(dir: string) {
-        const files = fs.readdirSync(dir)
-        for (let i = 0; i < files.length; i++) {
-            const filePath = path.join(dir, files[i])
-            const stat = fs.statSync(filePath)
-            if (stat.isDirectory()) {
-                walk(filePath);
+function getFilePaths(dirname: string) {
+    // Recursively get all file paths from the directory
+    let filePaths: string[] = [];
+    function readDir(dir: string) {
+        const files = fs.readdirSync(dir);
+        files.forEach(file => {
+            const fullPath = path.join(dir, file);
+            if (fs.statSync(fullPath).isDirectory()) {
+                readDir(fullPath);
             } else {
-                filePaths.push(path.resolve(filePath))
+                filePaths.push(fullPath);
             }
-        }
+        });
     }
-
-    walk(dirPath);
+    readDir(dirname);
     return filePaths;
 }
 
-export async function uploadFile(inputFilePath: string, outputFilePath: string) {
+async function uploadFile(inputFilePath: string, outputFilePath: string) {
+    console.log(`Uploading file: ${inputFilePath} to S3 path: ${outputFilePath}`);
     const fileContent = fs.readFileSync(inputFilePath);
     await s3Client.upload({
         Body: fileContent,
@@ -41,13 +39,14 @@ export async function uploadFile(inputFilePath: string, outputFilePath: string) 
     }).promise();
 }
 
-export async function uploadToS3(filePaths: string[]) {
+export async function uploadToS3(dirname: string, id: string) {
     try {
-        for (const filePath of filePaths) {
-            const outputFilePath = path.relative('output', filePath);
-            console.log(outputFilePath)
-            await uploadFile(outputFilePath, filePath);
-        }
+        const filePaths = getFilePaths(dirname);
+        const uploadPromises = filePaths.map(async filePath => {
+            const relativePath = path.relative(dirname, filePath).replace(/\\/g, '/');
+            await uploadFile(filePath, `output/${id}/${relativePath}`);  
+        });
+        await Promise.all(uploadPromises);
     } catch (error) {
         console.error(error);
         throw new Error('Error uploading files to S3');
