@@ -1,7 +1,8 @@
 import { Router } from 'express'
 import { simpleGit, SimpleGit } from 'simple-git'
 import { v4 as uuidv4 } from "uuid"
-import { uploadToS3 } from '../functions/aws'
+import { uploadToS3 } from '../functions/aws';
+import { createQueue, pushToQueue } from '../functions/queue';
 import { z } from 'zod'
 import { exec } from 'child_process';
 import path from 'path'
@@ -69,6 +70,7 @@ uploadRouter.post('/upload', async (req, res) => {
             fs.mkdirSync(`../output/${uploadUUID}`, { recursive: true });
             await git.clone(url, `../output/${uploadUUID}`);
             await uploadToS3(`../output/${uploadUUID}`, uploadUUID);
+            await pushToQueue(uploadUUID);
             res.status(200).json({ 
                 "id": uploadUUID
             });
