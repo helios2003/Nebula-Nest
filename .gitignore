@@ -28,3 +28,4 @@ dist/
 .env
 output/
 node_modules/
+app.js
