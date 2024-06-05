@@ -1,9 +1,24 @@
-import express from "express"
+import { listObjects, downloadFiles, uploadFiles } from './functions/aws';
+import { popFromQueue } from './functions/queue';
+import { buildProject } from './functions/build';
+import path from 'path';
 
-const app = express()
-app.use(express.json())
+async function main() {
+    while (true) {
+        const projectId = await popFromQueue();
+        if (!projectId) continue;
+        
+        try {
+            const listofFiles = await listObjects(projectId);
+            await downloadFiles(listofFiles, `../build/${projectId}`);
+            const projectPath = path.join(__dirname, `../build/${projectId}`);
+            const res = await buildProject(projectPath);
+            console.log('Build result:', res);
+            await uploadFiles(`../output/${projectId}`, projectId);
+        } catch (error) {
+            console.error('Error during the build process:', error);
+        }
+    }
+}
 
-
-app.listen(5000, () => {
-    console.log("Deployment server running on port 5000")
-})
+main();

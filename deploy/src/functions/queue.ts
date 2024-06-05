@@ -15,6 +15,7 @@ export async function popFromQueue() {
         if (message) {
             console.log(`Received "${message.content.toString()}" from Queue "${queueName}"`);
             channel.ack(message);
+            return message.content.toString();
         } else {
             console.log(`No messages in Queue "${queueName}"`);
         }
