@@ -18,10 +18,10 @@ export async function listObjects(dirname: string): Promise<S3.ListObjectsV2Outp
     return listFiles;
 }
 
-async function downloadFile(s3Object: S3.Object, localDir: string) {
+async function downloadFile(s3Object: S3.Object, localDir: string, removePrefix: string) {
     if (!s3Object.Key) return;
-
-    const filePath = path.join(localDir, s3Object.Key);
+    const relativePath = s3Object.Key.replace(removePrefix, '');
+    const filePath = path.join(localDir, relativePath);
     const fileDir = path.dirname(filePath);
 
     // if directory not present
@@ -68,11 +68,11 @@ async function uploadFile(inputFilePath: string, outputFilePath: string) {
     }).promise();
 }
 
-export async function downloadFiles(listFiles: S3.ListObjectsV2Output, localDir: string) {
+export async function downloadFiles(listFiles: S3.ListObjectsV2Output, localDir: string, prefixRemove: string) {
     if (!listFiles.Contents) return;
 
     for (const s3Object of listFiles.Contents) {
-        await downloadFile(s3Object, localDir);
+        await downloadFile(s3Object, localDir, prefixRemove);
     }
 }
 
@@ -81,7 +81,7 @@ export async function uploadFiles(dirname: string, id: string) {
         const filePaths = getFilePaths(dirname);
         const uploadPromises = filePaths.map(async filePath => {
             const relativePath = path.relative(dirname, filePath).replace(/\\/g, '/');
-            await uploadFile(filePath, `output/${id}/${relativePath}`);
+            await uploadFile(filePath, `build/${id}/${relativePath}`);
         });
         await Promise.all(uploadPromises);
     } catch (error) {

@@ -5,7 +5,7 @@ import { createQueue } from "./functions/queue";
 const app = express()
 app.use(express.json())
 
-async function initializeServer() {
+async function initializeQueue() {
     try {
         await createQueue();  
         console.log('Queue initialized successfully');
@@ -17,5 +17,5 @@ async function initializeServer() {
 app.use('/', uploadRouter)
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
-    initializeServer();
+    initializeQueue();
 })

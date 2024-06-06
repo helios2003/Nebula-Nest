@@ -28,5 +28,5 @@ dist/
 .env
 output/
 node_modules/
-app.js
 build.ts
+build

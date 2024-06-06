@@ -83,6 +83,7 @@ uploadRouter.post('/upload', async (req, res) => {
             await git.clone(url, `../output/${uploadUUID}`);
             await uploadToS3(`../output/${uploadUUID}`, uploadUUID);
             await pushToQueue(uploadUUID);
+            fs.rmdirSync(`../output/${uploadUUID}`, { recursive: true })
             res.status(200).json({ 
                 "id": uploadUUID
             });
