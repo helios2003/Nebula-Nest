@@ -14,9 +14,8 @@ async function main() {
             const listofFiles = await listObjects(`output/${projectId}`);
             const removePrefix = `output/${projectId}`;
             await downloadFiles(listofFiles, `../build/${projectId}`, removePrefix);
-            const projectPath = path.join(__dirname, `../build/${projectId}/frontend`);
-            const res = await buildProject(projectPath);
-            console.log('Build result:', res);
+            await buildProject(projectId);
+            console.log('Built successfully');
             //await uploadFiles(`../build/${projectId}`, projectId);
         } catch (error) {
             console.error('Error during the build process:', error);
