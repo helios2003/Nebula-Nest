@@ -28,5 +28,4 @@ dist/
 .env
 output/
 node_modules/
-build.ts
 build

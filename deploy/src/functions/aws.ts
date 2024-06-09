@@ -20,6 +20,7 @@ export async function listObjects(dirname: string): Promise<S3.ListObjectsV2Outp
 
 async function downloadFile(s3Object: S3.Object, localDir: string, removePrefix: string) {
     if (!s3Object.Key) return;
+    console.log(s3Object);
     const relativePath = s3Object.Key.replace(removePrefix, '');
     const filePath = path.join(localDir, relativePath);
     const fileDir = path.dirname(filePath);
