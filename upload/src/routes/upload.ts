@@ -3,6 +3,7 @@ import { simpleGit, SimpleGit } from 'simple-git'
 import { v4 as uuidv4 } from "uuid"
 import { uploadToS3 } from '../functions/aws';
 import { pushToQueue } from '../functions/queue';
+import { getRepoSize } from '../functions/utils';
 import { z } from 'zod'
 import { exec } from 'child_process';
 import path from 'path'
@@ -35,50 +36,24 @@ uploadRouter.post('/upload', async (req, res) => {
 
             // get the necessary data required to clone the project
             const url = urlResult.data;
-            // const splitURL = url.split('/')
-            // const len = splitURL.length
-            // const username = splitURL[len - 2]
-            // const projectName = splitURL[len - 1].replace('.git', '')
+            const splitURL = url.split('/')
+            const len = splitURL.length
+            const username = splitURL[len - 2]
+            const projectName = splitURL[len - 1].replace('.git', '')
 
+            const size = await getRepoSize(username, projectName);
+            if (parseInt(size) > 1024 * 1024) {
+                res.status(414).json({ "msg": "File size is too large "});
+                return;
+            }
             const git: SimpleGit = simpleGit();
             let uploadUUID: string = uuidv4().substring(0, 8);
             
-           
-            //const batchFilePath = path.join(__dirname, 'clone.bat').replace(/\\/g, '/')
+            const shellPath = path.join(__dirname, 'clone.sh').replace(/\\/g, '/')
             
             // this command checks if the repository size is too large to be cloned or not
-            // exec(`cmd /c ${batchFilePath} ${username} ${projectName}`, (error, stdout, stderr) => {
-            //     if (error) {
-            //         console.error('Error executing batch file:', error)
-            //         res.status(500).json({
-            //             msg: "Some error from our side, please check back later"
-            //         })
-            //         return
-            //     }
-            //     if (stderr) {
-            //         console.error('Batch file stderr:', stderr)
-            //         res.status(500).json({
-            //             msg: "Some error from our side, please check back later"
-            //         })
-            //         return
-            //     }
-            //     console.log("Stdout ka output is", stdout)
-            //     const size = parseInt(stdout.trim())
-            //     console.log(size)
-            //     if (isNaN(size)) {
-            //         console.error('Invalid size from batch file:', stdout)
-            //         res.status(500).json({
-            //             msg: "Some error from our side, please check back later"
-            //         })
-            //         return
-            //     }
-            //     if (size > 1024) {
-            //         res.status(404).json({
-            //             msg: "Repository size too large"
-            //         })
-            //         return
-            //     } else {
-                    // create the folder for the cloned repository
+            exec(`cmd /c "${shellPath}" "${username}" "${projectName}"`);
+            
             fs.mkdirSync(`../output/${uploadUUID}`, { recursive: true });
             await git.clone(url, `../output/${uploadUUID}`);
             await uploadToS3(`../output/${uploadUUID}`, uploadUUID);

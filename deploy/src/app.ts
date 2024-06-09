@@ -14,7 +14,7 @@ async function main() {
             const listofFiles = await listObjects(`output/${projectId}`);
             const removePrefix = `output/${projectId}`;
             await downloadFiles(listofFiles, `../build/${projectId}`, removePrefix);
-            await buildProject(projectId);
+            buildProject(projectId);
             console.log('Built successfully');
             //await uploadFiles(`../build/${projectId}`, projectId);
         } catch (error) {

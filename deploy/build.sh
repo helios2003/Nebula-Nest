@@ -11,10 +11,6 @@ LOCAL_DIRECTORY_PATH=$2
 IMAGE_NAME=$(basename "$LOCAL_DIRECTORY_PATH" | sed 's/.*\///; s/\..*//')
 CONTAINER_NAME="$IMAGE_NAME"
 
-# relative path -> absolute path
-ABS_LOCAL_DIRECTORY_PATH=$(realpath "$LOCAL_DIRECTORY_PATH")
-echo "ABS_LOCAL_DIRECTORY_PATH: $ABS_LOCAL_DIRECTORY_PATH"
-
 docker build -f "$DOCKERFILE_PATH" -t "$IMAGE_NAME" .
 docker run -dit "$CONTAINER_NAME"
 
@@ -25,7 +21,8 @@ CONTAINER_ID=$(docker ps -q -f ancestor="$IMAGE_NAME")
 
 if [ -n "$CONTAINER_ID" ]; then
   # copy files
-  docker cp "$ABS_LOCAL_DIRECTORY_PATH" "$CONTAINER_ID:/home/app"
+  echo "Container $CONTAINER_ID sucessfully created!!"
+  docker cp "$LOCAL_DIRECTORY_PATH" "$CONTAINER_ID:/home/app"
   docker exec "$CONTAINER_ID" sh -c "cd /home/app/$IMAGE_NAME/frontend && npm install && npm run build"
 else
   echo "Error: The container $CONTAINER_NAME is not running."
