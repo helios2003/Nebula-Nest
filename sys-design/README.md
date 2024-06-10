@@ -15,3 +15,6 @@
 
 ## Request-Response Server
 - After deployment is complete, the server retrieves the files from S3 and sends it to client.
+
+## PotgreSQL
+- Will store the user's project configuration details like the output folder, the build command, package manager etc.
