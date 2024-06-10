@@ -7,5 +7,5 @@ export function buildProject(projectId: string) {
     const buildShellScript = path.join(dockerFileDir, 'Dockerfile');
     console.log("building shell script", buildShellScript);
     console.log("project id path", filesParentDir);
-    exec(`./build.sh "${buildShellScript}" "${filesParentDir}"`);
+    exec(`bash ./build.sh "${buildShellScript}" "${filesParentDir}"`);
 }
