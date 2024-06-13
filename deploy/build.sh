@@ -24,6 +24,7 @@ if [ -n "$CONTAINER_ID" ]; then
   echo "Container $CONTAINER_ID sucessfully created!!"
   docker cp "$LOCAL_DIRECTORY_PATH" "$CONTAINER_ID:/home/app"
   docker exec "$CONTAINER_ID" sh -c "cd /home/app/$IMAGE_NAME/frontend && npm install && npm run build"
+  docker cp "$CONTAINER_ID:/home/app/$IMAGE_NAME/frontend/dist" "$LOCAL_DIRECTORY_PATH/dist"
 else
   echo "Error: The container $CONTAINER_NAME is not running."
   echo "Logs from the container:"
