@@ -7,18 +7,20 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 
 export default function Deploy() {
-  const images = ["./details.png", "./view.png", "./wait.png"];
+  const images = ["./details.png", "./wait.png", "./view.png"];
+  const captions = ['Submit Configuration', 'Wait for deployment', 'View the Website!!'];
+
   return (
-    <div>
-        <div className="text-4xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent mt-4 ml-4">
+    <div className="grid grid-cols-[80%_20%]">
+        {/* <div className="text-4xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent mt-4 ml-4">
           Enter your Project's Configuration
-        </div>
-      <div className="absolute inset-0 -z-50 h-full w-full items-center px-5 py-28 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]">
+        </div> */}
+      <div className="absolute inset-0 -z-50 h-full w-full items-center px-5 py-14 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]">
         <Configuration />
       </div>
-      <div>
+      <div className="flex flex-col -mb-44">
         <Carousel
-          className="w-full max-w-xs inset-3/4 mt-40 mr-32"
+          className="max-w-xs inset-3/4"
           opts={{
             align: "start",
             loop: true,
@@ -39,6 +41,7 @@ export default function Deploy() {
                     alt="carousel images"
                     className="rounded-lg h-50 w-80"
                   />
+                  <p className="text-center mt-4 text-3xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">{captions[`${index}`]}</p>
                 </div>
               </CarouselItem>
             ))}

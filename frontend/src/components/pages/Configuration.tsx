@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 import {
   Form,
   FormControl,
@@ -13,6 +14,9 @@ import {
 import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
+  url: z.string().min(1, {
+    message: "Cannot be empty",
+  }),
   directory: z.string().min(1, {
     message: "Cannot be empty",
   }),
@@ -28,20 +32,60 @@ const formSchema = z.object({
 });
 
 export default function Configuration() {
+  // const [URL, setURL] = useState<string>("");
+  // const [directory, setDirectory] = useState<string>("");
+  // const [install, setInstall] = useState<string>("");
+  // const [build, setBuild] = useState<string>("");
+  // const [output, setOutput] = useState<string>("");
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      url: "",
       directory: "./src",
       install: "npm install",
       build: "npm run build",
-      output: "./dist"
+      output: "./dist",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {}
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const response = await axios.post("localhost:3000/upload", {
+      url: values.url,
+      directory: values.directory,
+      install: values.install,
+      build: values.build,
+      output: values.output,
+    });
+    if (response.status === 200) {
+      alert("Success");
+    } else {
+      alert("Failed");
+    }
+  }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-4">
+        <FormField
+          control={form.control}
+          name="url"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-white">GitHub/GitlLab URL</FormLabel>
+              <FormControl className="max-w-80">
+                <Input
+                  placeholder="https://github.com/username/repo.git"
+                  {...field}
+                  className="bg-neutral-400 h-8"
+                  // onChange={(e) => {
+                  //   setURL(e.target.value);
+                  // }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="directory"
@@ -49,7 +93,14 @@ export default function Configuration() {
             <FormItem>
               <FormLabel className="text-white">Root directory</FormLabel>
               <FormControl className="max-w-80">
-                <Input placeholder="./src" {...field} className="bg-neutral-400"/>
+                <Input
+                  placeholder="./src"
+                  {...field}
+                  className="bg-neutral-400 h-8"
+                  // onChange={(e) => {
+                  //   setDirectory(e.target.value);
+                  // }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -60,9 +111,18 @@ export default function Configuration() {
           name="install"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-white">Command to install dependencies</FormLabel>
-              <FormControl className="max-w-80">
-                <Input placeholder="npm install" {...field} className="bg-neutral-400"/>
+              <FormLabel className="text-white">
+                Command to install dependencies
+              </FormLabel>
+              <FormControl className="max-w-80 h-8">
+                <Input
+                  placeholder="npm install"
+                  {...field}
+                  className="bg-neutral-400"
+                  // onChange={(e) => {
+                  //   setInstall(e.target.value);
+                  // }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -73,9 +133,18 @@ export default function Configuration() {
           name="build"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-white">Command to build the project</FormLabel>
-              <FormControl className="max-w-80">
-                <Input placeholder="npm run build" {...field} className="bg-neutral-400"/>
+              <FormLabel className="text-white">
+                Command to build the project
+              </FormLabel>
+              <FormControl className="max-w-80 h-8">
+                <Input
+                  placeholder="npm run build"
+                  {...field}
+                  className="bg-neutral-400"
+                  // onChange={(e) => {
+                  //   setBuild(e.target.value);
+                  // }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -86,9 +155,18 @@ export default function Configuration() {
           name="output"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-white">Directory for the output of the build</FormLabel>
-              <FormControl className="max-w-80">
-                <Input placeholder="./dist" {...field} className="bg-neutral-400"/>
+              <FormLabel className="text-white">
+                Directory for the output of the build
+              </FormLabel>
+              <FormControl className="max-w-80 h-8">
+                <Input
+                  placeholder="./dist"
+                  {...field}
+                  className="bg-neutral-400"
+                  // onChange={(e) => {
+                  //   setOutput(e.target.value);
+                  // }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
