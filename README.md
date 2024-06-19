@@ -8,13 +8,15 @@ This project provides a simple way to deploy the frontend of the applications.
 git clone https://github.com/<your-username>/Nebula-Nest.git
 ```
 - Change the directory to `Nebula Nest`.
+- Rename ``.env.example`` to ``.env`` and fill the required details.
+- Navigate to ``prisma/`` and rename ``.env.local.example`` to ``.env`` and fill the database URL.
 - Run the command `./start.sh` to install the dependencies and start the server.
 
 ## Tech Stack
 ### Frontend
 - React as the web framework.
 - Tailwind CSS and ShadCN UI for styling.
-## Backend
+### Backend
 - NodeJS + Express as the primary stack.
 - AWS / Cloudflare for cloud infrastructure.
 - PostgreSQL as the database.

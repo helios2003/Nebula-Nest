@@ -1,8 +1,6 @@
 import { listObjects, downloadFiles, uploadFiles } from "./functions/aws";
 import { popFromQueue } from "./functions/queue";
 import { buildProject } from "./functions/build";
-import path from "path";
-import fs from "fs";
 
 let isRunning = false;
 
@@ -22,10 +20,12 @@ async function main() {
         await downloadFiles(listofFiles, `../build/${projectId}`, removePrefix);
         await buildProject(projectId);
         console.log("Built successfully");
-        //await uploadFiles(`../build/${projectId}`, projectId);
+        await uploadFiles(`../build/${projectId}/dist`, projectId);
     } catch (error) {
         console.error("Error during the build process:", error);
     }
     isRunning = false;
 }
+
+// poll the queue at the interval of 10 seconds
 setInterval(main, 10000);
