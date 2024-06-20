@@ -50,7 +50,7 @@ export default function Configuration() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await axios.post("localhost:3000/upload", {
+    const response = await axios.post("http://localhost:3000/upload", {
       url: values.url,
       directory: values.directory,
       install: values.install,
@@ -77,9 +77,6 @@ export default function Configuration() {
                   placeholder="https://github.com/username/repo.git"
                   {...field}
                   className="bg-neutral-400 h-8"
-                  // onChange={(e) => {
-                  //   setURL(e.target.value);
-                  // }}
                 />
               </FormControl>
               <FormMessage />
@@ -91,7 +88,9 @@ export default function Configuration() {
           name="directory"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-white">Root directory</FormLabel>
+              <FormLabel className="text-white">
+                Root directory
+              </FormLabel>
               <FormControl className="max-w-80">
                 <Input
                   placeholder="./src"
