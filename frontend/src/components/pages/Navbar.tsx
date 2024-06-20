@@ -10,8 +10,8 @@ export function Navbar() {
           <MenubarMenu>
             <MenubarTrigger className="text-white text-xl font-thin cursor-pointer hover:text-indigo-700">Nebula-Nest</MenubarTrigger>
             <div className="flex space-x-4">
-            <MenubarTrigger className="text-white text-xl font-thin cursor-pointer hover:text-indigo-700">GitHub</MenubarTrigger>
-            <MenubarTrigger className="text-white text-xl font-thin cursor-pointer hover:text-indigo-700">Contact</MenubarTrigger>
+            <MenubarTrigger className="text-white text-xl font-thin cursor-pointer hover:text-indigo-700"><a href="https://github.com/helios2003/Nebula-Nest" target="blank">GitHub</a></MenubarTrigger>
+            <MenubarTrigger className="text-white text-xl font-thin cursor-pointer hover:text-indigo-700"><a href="mailto:ankitdash2019@gmail.com">Contact</a></MenubarTrigger>
             <MenubarTrigger className="text-white text-xl font-thin cursor-pointer hover:text-indigo-700">Features</MenubarTrigger>
             </div>
           </MenubarMenu>

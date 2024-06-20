@@ -20,4 +20,5 @@ model Projects {
   install   String      @db.VarChar(255)   // install command
   build     String      @db.VarChar(255)   // build command
   output    String      @db.VarChar(255)   // output of build command folder
+  logs      String      @db.Text           // logs of build command
 }
