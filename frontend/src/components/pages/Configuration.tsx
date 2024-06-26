@@ -33,11 +33,7 @@ const formSchema = z.object({
 });
 
 export default function Configuration() {
-  // const [URL, setURL] = useState<string>("");
-  // const [directory, setDirectory] = useState<string>("");
-  // const [install, setInstall] = useState<string>("");
-  // const [build, setBuild] = useState<string>("");
-  // const [output, setOutput] = useState<string>("");
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,20 +57,21 @@ export default function Configuration() {
           build: values.build,
           output: values.output,
         });
-        console.log(response.status);
         if (response.status === 200) {
           toast({
             title: "Configuration sent successfully, queued for deployment"
           })
         } {
           toast({
-              title: "Enter valid configuration details"
+              title: "Enter valid configuration details",
+              variant: "destructive"
             }
-          )
+          );
         }
       } catch(err) {
         toast({
-          title: "Error sending configuration",
+          title: "Error sending configuration, please try again",
+          variant: 'destructive',
         });
       }
     }
@@ -111,9 +108,6 @@ export default function Configuration() {
                   placeholder="./src"
                   {...field}
                   className="bg-neutral-400 h-8"
-                  // onChange={(e) => {
-                  //   setDirectory(e.target.value);
-                  // }}
                 />
               </FormControl>
               <FormMessage />
@@ -133,9 +127,6 @@ export default function Configuration() {
                   placeholder="npm install"
                   {...field}
                   className="bg-neutral-400"
-                  // onChange={(e) => {
-                  //   setInstall(e.target.value);
-                  // }}
                 />
               </FormControl>
               <FormMessage />
@@ -155,9 +146,6 @@ export default function Configuration() {
                   placeholder="npm run build"
                   {...field}
                   className="bg-neutral-400"
-                  // onChange={(e) => {
-                  //   setBuild(e.target.value);
-                  // }}
                 />
               </FormControl>
               <FormMessage />
@@ -177,16 +165,13 @@ export default function Configuration() {
                   placeholder="./dist"
                   {...field}
                   className="bg-neutral-400"
-                  // onChange={(e) => {
-                  //   setOutput(e.target.value);
-                  // }}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" onSubmit={onSubmit()}>Submit</Button>
+        <Button type="submit">Submit</Button>
       </form>
     </Form>
   );

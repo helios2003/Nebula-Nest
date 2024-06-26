@@ -15,7 +15,7 @@ async function main() {
         isRunning = false;
         return;
     }
-
+    
     try {
         const listofFiles = await listObjects(`output/${projectId}`);
         const removePrefix = `output/${projectId}`;
@@ -27,14 +27,12 @@ async function main() {
                 id: projectId
             }
         });
-        if (!project) {
-            console.log("Project not found");
-            return;
-        }
-        const frontendDir = project.dir;
-        const installCommand = project.install;
-        const buildCommand = project.build;
-        const outputDir = project.output;
+        
+        const frontendDir = project?.dir!;
+        const installCommand = project?.install!;
+        const buildCommand = project?.build!;
+        const outputDir = project?.output!;
+        
         // Build the project
         await buildProject({ projectId, frontendDir, installCommand, buildCommand, outputDir});
         console.log("Built successfully");
