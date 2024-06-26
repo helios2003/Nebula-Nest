@@ -19,6 +19,6 @@ model Projects {
   dir       String      @db.VarChar(255)   // project directory
   install   String      @db.VarChar(255)   // install command
   build     String      @db.VarChar(255)   // build command
-  output    String      @db.VarChar(255)   // output of build command folder
+  output    String      @db.VarChar(255)   // output directory
   logs      String      @db.Text           // logs of build command
 }

@@ -1,8 +1,11 @@
 import express from "express";
 import { uploadRouter } from "./routes/upload";
 import { createQueue } from "./functions/queue";
+// @ts-ignore
+import cors from 'cors';
 
 const app = express()
+app.use(cors())
 app.use(express.json())
 
 async function initializeQueue() {

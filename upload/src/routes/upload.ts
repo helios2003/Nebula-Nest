@@ -4,28 +4,28 @@ import { v4 as uuidv4 } from "uuid"
 import { uploadToS3 } from '../functions/aws';
 import { pushToQueue } from '../functions/queue';
 import { getRepoSize } from '../functions/utils';
-import { z } from 'zod'
 import { exec } from 'child_process';
 import path from 'path'
 import fs from 'fs'
-import WebSocket from 'ws';
+import { configurationSchema } from '../zod/validate';
+import { PrismaClient } from '../../../db/node_modules/.prisma/client'
 
 const uploadRouter = Router()
-const urlSchema = z.string().url().refine(url => url.startsWith('https://github.com') || url.startsWith('https://gitlab.com'));
+const prisma = new PrismaClient()
 
 uploadRouter.post('/upload', async (req, res) => {
-    const inputURL = req.body.url;
+    const inputURL = req.body;
     try {
-        const urlResult = urlSchema.safeParse(inputURL);
+        const urlResult = configurationSchema.safeParse(inputURL);
+
         if (urlResult.success === false) {
             res.status(403).json({
                 msg: "Invalid input"
             })
         } else {
-
             // get the necessary data required to clone the project
-            const url = urlResult.data;
-            const splitURL = url.split('/')
+            const repoURL = urlResult.data.url;
+            const splitURL = repoURL.split('/')
             const len = splitURL.length
             const username = splitURL[len - 2]
             const projectName = splitURL[len - 1].replace('.git', '')
@@ -43,8 +43,21 @@ uploadRouter.post('/upload', async (req, res) => {
             // this command checks if the repository size is too large to be cloned or not
             exec(`cmd /c "${shellPath}" "${username}" "${projectName}"`);
             
+            // stores the project configuration in the database
+            await prisma.projects.create({
+                data: {
+                    id: uploadUUID,
+                    url: repoURL,
+                    dir: urlResult.data.directory,
+                    install: urlResult.data.install,
+                    build: urlResult.data.build,
+                    output: urlResult.data.output,
+                    logs: ''
+                }
+            });
+
             fs.mkdirSync(`../output/${uploadUUID}`, { recursive: true });
-            await git.clone(url, `../output/${uploadUUID}`);
+            await git.clone(repoURL, `../output/${uploadUUID}`);
             await uploadToS3(`../output/${uploadUUID}`, uploadUUID);
             await pushToQueue(uploadUUID);
             fs.rmdirSync(`../output/${uploadUUID}`, { recursive: true })

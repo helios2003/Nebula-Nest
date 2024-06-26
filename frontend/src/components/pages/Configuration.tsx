@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast"
 
 const formSchema = z.object({
   url: z.string().min(1, {
@@ -49,20 +50,34 @@ export default function Configuration() {
     },
   });
 
+  const { toast } = useToast()
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await axios.post("http://localhost:3000/upload", {
-      url: values.url,
-      directory: values.directory,
-      install: values.install,
-      build: values.build,
-      output: values.output,
-    });
-    if (response.status === 200) {
-      alert("Success");
-    } else {
-      alert("Failed");
+    try {
+        const response = await axios.post("http://localhost:3000/upload", {
+          url: values.url,
+          directory: values.directory,
+          install: values.install,
+          build: values.build,
+          output: values.output,
+        });
+        console.log(response.status);
+        if (response.status === 200) {
+          toast({
+            title: "Configuration sent successfully, queued for deployment"
+          })
+        } {
+          toast({
+              title: "Enter valid configuration details"
+            }
+          )
+        }
+      } catch(err) {
+        toast({
+          title: "Error sending configuration",
+        });
+      }
     }
-  }
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-4">
@@ -171,7 +186,7 @@ export default function Configuration() {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" onSubmit={onSubmit()}>Submit</Button>
       </form>
     </Form>
   );

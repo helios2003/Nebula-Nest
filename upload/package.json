@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "nodemon dist/app.js",
     "build": "tsc -b",
-    "copy": "copy .\\src\\routes\\clone.bat .\\dist\\routes\\clone.bat",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -32,6 +31,7 @@
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.5",
+    "@types/cors": "^2.8.17",
     "@types/shelljs": "^0.8.15",
     "@types/uuid": "^9.0.8",
     "esbuild": "0.20.0"

@@ -9,7 +9,9 @@ git clone https://github.com/<your-username>/Nebula-Nest.git
 ```
 - Change the directory to `Nebula Nest`.
 - Rename ``.env.example`` to ``.env`` and fill the required details.
-- Navigate to ``prisma/`` and rename ``.env.local.example`` to ``.env`` and fill the database URL.
+### For the database
+- Navigate to ``db/`` and rename ``.env.local.example`` to ``.env`` and fill the database URL.
+- Run `npm install` and then run `npx prisma migrate dev --name <commit-message>` to migrate the database and `npx prisma generate` to generate the Prisma Client.
 - Run the command `./start.sh` to install the dependencies and start the server.
 
 ## Tech Stack
