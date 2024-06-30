@@ -4,7 +4,7 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 
-export function Navbar() {
+export default function Navbar() {
     return (
         <Menubar className="bg-zinc-950 border-x-stone-900 w-full h-12 flex justify-between items-center px-4 mb-4">
           <MenubarMenu>
