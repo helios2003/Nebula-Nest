@@ -15,7 +15,7 @@ export default function Deploy() {
       <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text ml-6">
         <Configuration />
       </div>
-      <div className="absolute inset-0 -z-50 items-center px-5 py-14 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]" />
+      <div className="fixed inset-0 -z-50 items-center px-5 py-14 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]" />
       <div className="bg-black w-4/6 -mx-44 h-max mt-24">
         <Carousel
           className="flex items-center justify-center"

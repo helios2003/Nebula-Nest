@@ -39,10 +39,10 @@ export default function Configuration() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       url: "",
-      directory: "./src",
+      directory: "src",
       install: "npm install",
       build: "npm run build",
-      output: "./dist",
+      output: "dist",
     },
   });
 
@@ -105,7 +105,7 @@ export default function Configuration() {
               </FormLabel>
               <FormControl className="max-w-80">
                 <Input
-                  placeholder="./src"
+                  placeholder="src"
                   {...field}
                   className="bg-neutral-400 h-8"
                 />
@@ -162,7 +162,7 @@ export default function Configuration() {
               </FormLabel>
               <FormControl className="max-w-80 h-8">
                 <Input
-                  placeholder="./dist"
+                  placeholder="dist"
                   {...field}
                   className="bg-neutral-400"
                 />
