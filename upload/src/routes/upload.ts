@@ -3,7 +3,7 @@ import { simpleGit, SimpleGit } from 'simple-git'
 import { v4 as uuidv4 } from "uuid"
 import { uploadToS3 } from '../functions/aws';
 import { pushToQueue } from '../functions/queue';
-import { getRepoSize } from '../functions/utils';
+import { getRepoSize, createLogger } from '../functions/utils';
 import { exec } from 'child_process';
 import path from 'path'
 import fs from 'fs'
@@ -42,7 +42,9 @@ uploadRouter.post('/upload', async (req, res) => {
             
             // this command checks if the repository size is too large to be cloned or not
             exec(`cmd /c "${shellPath}" "${username}" "${projectName}"`);
-            
+            const logger = createLogger(uploadUUID);
+
+            logger.info(`Starting upload process for ${uploadUUID}`);
             // stores the project configuration in the database
             await prisma.projects.create({
                 data: {
@@ -58,20 +60,18 @@ uploadRouter.post('/upload', async (req, res) => {
 
             fs.mkdirSync(`../output/${uploadUUID}`, { recursive: true });
             await git.clone(repoURL, `../output/${uploadUUID}`);
+            logger.info(`Cloned repository for ${uploadUUID}`);
             await uploadToS3(`../output/${uploadUUID}`, uploadUUID);
             await pushToQueue(uploadUUID);
-            fs.rmdirSync(`../output/${uploadUUID}`, { recursive: true })
-            // create the log file and add this entry
-            fs.mkdirSync('../logs', { recursive: true });
-            fs.appendFile(`../logs/${uploadUUID}.log`, `✔️ Cloned the project successfully and queued the deployment\n`, (err) => {
-                if (err) throw err;
-            });
+            fs.rmdirSync(`../output/${uploadUUID}`, { recursive: true });
+
+            logger.info(`✔️ Cloned the project successfully and queued the deployment for ${uploadUUID}`);
             res.status(200).json({ 
                 "id": uploadUUID
             });
         }
     } catch (err) {
-        console.error(err)
+        
         res.status(500).json({
             msg: "Oops, there is an error from our side"
         })

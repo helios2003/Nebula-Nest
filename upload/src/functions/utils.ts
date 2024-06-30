@@ -1,5 +1,6 @@
 import { exec } from 'child_process';
 import path from 'path';
+import * as log4js from "log4js";
 
 export async function getRepoSize(username: string, projectName: string): Promise<string> {
     //const topLevelDir = path.resolve(''[Sy)
@@ -18,4 +19,18 @@ export async function getRepoSize(username: string, projectName: string): Promis
             resolve(stdout.trim());
         });
     });
+}
+
+export function createLogger(uploadUUID: string) {
+    log4js.configure({
+        appenders: {
+            file: { type: 'file', filename: `../logs/${uploadUUID}.log` },
+            console: { type: 'console' }
+        },
+        categories: {
+            default: { appenders: ['file', 'console'], level: 'info' }
+        }
+    });
+
+    return log4js.getLogger();
 }
