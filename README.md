@@ -12,7 +12,15 @@ git clone https://github.com/<your-username>/Nebula-Nest.git
 ### For the database
 - Navigate to ``db/`` and rename ``.env.local.example`` to ``.env`` and fill the database URL.
 - Run `npm install` and then run `npx prisma migrate dev --name <commit-message>` to migrate the database and `npx prisma generate` to generate the Prisma Client.
-- Run the command `./start.sh` to install the dependencies and start the server.
+
+### For the servers
+- Rename ``.env.example`` to ``.env`` and fill the required details.
+- Run the command `./start.sh` to install the dependencies and start all the 3 servers.
+- Run `./stop.sh` to stop all the servers.
+
+### For the frontend
+- Go into `frontend/` directory.
+- Run ``npm install`` to install the dependencies and then run ``npm run dev`` to start the frontend.
 
 ## Tech Stack
 ### Frontend
@@ -24,6 +32,16 @@ git clone https://github.com/<your-username>/Nebula-Nest.git
 - PostgreSQL as the database.
 - RabbitMQ for message queueing.
 - Docker for sandboxing.
+
+## Screenshots
+Home Page <br />
+
+![Home Page](./assets/home.png)
+
+Details Page (where you can set the configuration for the project) <br />
+
+![Dashboard Page](./assets/details.png)
+
 
 ## License
 The project is licensed under MIT License.

@@ -1,7 +1,7 @@
 #!/bin/bash
 PID_FILE="./pids.txt"
 
-directories=('./upload' './deploy' './wss')
+directories=('./upload' './deploy' './wss' './health')
 
 > "$PID_FILE"
 

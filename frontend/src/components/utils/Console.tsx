@@ -1,4 +1,4 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { StatusProps } from "./Status";
@@ -10,11 +10,12 @@ export default function Console({ projectId }: StatusProps) {
 
     async function fetchLogs() {
         try {
-            const response = await axios.get(`http://localhost:4000/${projectId}`);
+            const response = await axios.get(`http://localhost:4000/logs/${projectId}`);
             if (response.status === 200) {
-                setLogs(prevLogs => prevLogs + response.data);
+                setLogs(response.data.logs);
             }
         } catch (error) {
+            console.error(error)
             toast({
                 title: "Cannot fetch your project's logs",
                 variant: 'destructive',
@@ -30,8 +31,9 @@ export default function Console({ projectId }: StatusProps) {
 
     return (
         <>
-            <ScrollArea className="h-[400px] w-[600px] border p-4 m-8 text-white bg-black rounded-lg">
+            <ScrollArea className="h-[420px] w-[700px] border p-4 -ml-1 mt-8 text-white bg-black rounded-lg text-sm">
                 <pre>{logs}</pre>
+                <ScrollBar orientation='horizontal' />
             </ScrollArea>
         </>
     );

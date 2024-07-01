@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import Options from "../utils/Options";
+import Console from "../utils/Console";
 
 const formSchema = z.object({
   url: z.string().min(1, {
@@ -83,7 +84,10 @@ export default function Configuration() {
   return (
     <>
       {configuration ? (
-        <Options projectId={uuid} />
+        <>
+          <Options projectId={uuid} />
+          <Console projectId={uuid} />
+        </>
       ) : (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-4">
