@@ -12,8 +12,7 @@ app.get('/:id', (req, res) => {
         if (status === 'done') {
             fs.unlinkSync(`../logs/${id}.log`);
             res.status(200).json({ message: 'Website is ready to view' });
-        } else {
-            fs.appendFileSync(`../logs/${id}.log`, `${new Date().toISOString()}: ${status}\n`);
+        } else if (!status) {
             res.status(102).json({ message: 'Website is being built' });
         }
     } catch(err) {

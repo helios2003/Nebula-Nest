@@ -13,8 +13,18 @@
 - Building process is run inside a docker container for security reasons. Server can spin containers up and down at it's will.
 - The converted files are sent back to S3 for storage.
 
-## Request-Response Server
-- After deployment is complete, the server retrieves the files from S3 and sends it to client.
+## Request-Response Webhook
+- After deployment is complete, the server retrieves the files and static assets from S3 and sends it to client.
+
+## Health status server
+- This server is polled by the client at regular intervals to check if the project is building or not.
+- This service essentially reads from the log file and notifies the client when the project is ready to be viewed.
 
 ## PotgreSQL
-- Will store the user's project configuration details like the output folder, the build command, package manager etc.
+- Chose Postgres because this is a project with lesser reads and more writes and Postgres is good at this functionality.
+- Will store the user's project configuration details like the output folder, the installation command, the build command etc.
+- This will help the user view the project logs for the specific ``id`` in the future as well.
+
+## Log File
+- This will contain logs of the project's build and deployment process.
+- And it will get uploaded to the database as well.

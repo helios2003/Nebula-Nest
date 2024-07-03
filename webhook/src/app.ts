@@ -1,16 +1,20 @@
 import express from 'express';
 import { S3 } from 'aws-sdk';
 import dotenv from 'dotenv';
+import axios from 'axios';
+import fs from 'fs';
+import { PrismaClient } from '../../db/node_modules/.prisma/client' 
 
 dotenv.config({ path: '../.env' });
 const app = express();
-const PORT = 4000;
+const PORT = 7000;
 
 const s3Client = new S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? "",
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? "",
     endpoint: process.env.AWS_URL ?? "",
 });
+const prisma = new PrismaClient();
 
 app.use(async (req, res) => {
     const hostname = req.hostname;
@@ -28,6 +32,24 @@ app.use(async (req, res) => {
 
         res.setHeader('Content-Type', data.ContentType || 'application/octet-stream');
         res.send(data.Body);
+        // update status
+        await axios.post(`http://localhost:4000/${subDomain}`, {
+            status: 'done'
+        });
+        const logs = fs.readFileSync(`../logs/${subDomain}.log`, 'utf8');
+        await prisma.projects.update({
+            where: {
+                id: subDomain
+            },
+            data: {
+                logs: logs
+            }
+        })
+        // remove the file after updating
+        await fs.rmSync(`./../logs/${subDomain}.log`, {
+            force: true
+        });
+        console.log(`Added logs to the database for ${subDomain}`);
     } catch (error: any) {
         console.error(`Error fetching ${s3Key}:`, error);
         if (error.code === 'NoSuchKey') {

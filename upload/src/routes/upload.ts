@@ -8,7 +8,7 @@ import { exec } from 'child_process';
 import path from 'path'
 import fs from 'fs'
 import { configurationSchema } from '../zod/validate';
-import { PrismaClient } from '../../../db/node_modules/.prisma/client'
+import { PrismaClient } from '../../../db/node_modules/.prisma/client';
 
 const uploadRouter = Router()
 const prisma = new PrismaClient()
@@ -17,7 +17,6 @@ uploadRouter.post('/upload', async (req, res) => {
     const inputURL = req.body;
     try {
         const urlResult = configurationSchema.safeParse(inputURL);
-
         if (urlResult.success === false) {
             res.status(403).json({
                 msg: "Invalid input"
@@ -29,7 +28,7 @@ uploadRouter.post('/upload', async (req, res) => {
             const len = splitURL.length
             const username = splitURL[len - 2]
             const projectName = splitURL[len - 1].replace('.git', '')
-
+            
             const size = await getRepoSize(username, projectName);
             if (parseInt(size) > 1024 * 1024) {
                 res.status(414).json({ "msg": "File size is too large "});
@@ -43,7 +42,7 @@ uploadRouter.post('/upload', async (req, res) => {
             // this command checks if the repository size is too large to be cloned or not
             exec(`cmd /c "${shellPath}" "${username}" "${projectName}"`);
             const logger = createLogger(uploadUUID);
-
+            
             logger.info(`Starting upload process for ${uploadUUID}`);
             // stores the project configuration in the database
             await prisma.projects.create({

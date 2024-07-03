@@ -22,6 +22,20 @@ git clone https://github.com/<your-username>/Nebula-Nest.git
 - Go into `frontend/` directory.
 - Run ``npm install`` to install the dependencies and then run ``npm run dev`` to start the frontend.
 
+
+## Screenshots
+**HOME PAGE** <br />
+
+![Home Page](./assets/home.png)
+
+**DETAILS PAGE** (where you can set the configuration for the project) <br />
+
+![Dashboard Page](./assets/details.png)
+
+**DEPLOYMENT LOGS** <br />
+
+![Logs Page](./assets/logs.png)
+
 ## Tech Stack
 ### Frontend
 - React as the web framework.
@@ -32,16 +46,6 @@ git clone https://github.com/<your-username>/Nebula-Nest.git
 - PostgreSQL as the database.
 - RabbitMQ for message queueing.
 - Docker for sandboxing.
-
-## Screenshots
-Home Page <br />
-
-![Home Page](./assets/home.png)
-
-Details Page (where you can set the configuration for the project) <br />
-
-![Dashboard Page](./assets/details.png)
-
 
 ## License
 The project is licensed under MIT License.

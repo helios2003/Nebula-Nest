@@ -51,6 +51,7 @@ export default function Configuration() {
   });
 
   const { toast } = useToast()
+  const [submitted, setSubmitted] = useState<Boolean>(false);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
