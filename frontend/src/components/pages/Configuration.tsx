@@ -54,6 +54,10 @@ export default function Configuration() {
   const [submitted, setSubmitted] = useState<Boolean>(false);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setSubmitted(true);
+    toast({
+      title: "Please wait, we have will redirect you to the build logs after successfully obtaining the repository"
+    })
     try {
       const response = await axios.post("http://localhost:3000/upload", {
         url: values.url,
@@ -63,12 +67,14 @@ export default function Configuration() {
         output: values.output,
       });
       if (response.status === 200) {
+        setSubmitted(false);
         setConfiguration(true);
         setUUID(response.data.id);
         toast({
           title: "Configuration sent successfully, queued for deployment"
         })
       } else {
+        setSubmitted(false);
         toast({
           title: "Enter valid configuration details",
           variant: "destructive"
@@ -76,6 +82,7 @@ export default function Configuration() {
         );
       }
     } catch (err) {
+      setSubmitted(false);
       toast({
         title: "Error sending configuration, please try again",
         variant: 'destructive',
@@ -185,7 +192,12 @@ export default function Configuration() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <Button
+              type="submit"
+              className={`${submitted ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {submitted ? 'Submitted...' : 'Submit'}
+            </Button>
           </form>
         </Form>
       )}

@@ -20,7 +20,6 @@ export default function Status({ projectId }: StatusProps) {
     async function pollStatus() {
         try {
             const response = await axios.get(`http://localhost:4000/${projectId}`);
-            console.log(response);
             if (response.status === 102) {
                 setLoading(true);
             } else if (response.status === 200) {
