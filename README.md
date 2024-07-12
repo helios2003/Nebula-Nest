@@ -36,6 +36,10 @@ git clone https://github.com/<your-username>/Nebula-Nest.git
 
 ![Logs Page](./assets/logs.png)
 
+**DEPLOYED FRONTEND** <br />
+
+![View Website](./assets/view.png)
+
 ## Tech Stack
 ### Frontend
 - React as the web framework.

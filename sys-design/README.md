@@ -20,7 +20,7 @@
 - This server is polled by the client at regular intervals to check if the project is building or not.
 - This service essentially reads from the log file and notifies the client when the project is ready to be viewed.
 
-## PotgreSQL
+## PostgreSQL
 - Chose Postgres because this is a project with lesser reads and more writes and Postgres is good at this functionality.
 - Will store the user's project configuration details like the output folder, the installation command, the build command etc.
 - This will help the user view the project logs for the specific ``id`` in the future as well.

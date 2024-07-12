@@ -33,23 +33,38 @@ app.use(async (req, res) => {
         res.setHeader('Content-Type', data.ContentType || 'application/octet-stream');
         res.send(data.Body);
         // update status
-        await axios.post(`http://localhost:4000/${subDomain}`, {
-            status: 'done'
+        // await axios.post(`http://localhost:4000/${subDomain}`, {
+        //     status: 'done'
+        // });
+        const isDeployed = await prisma.projects.findUnique({
+            where: { id: subDomain },
         });
-        const logs = fs.readFileSync(`../logs/${subDomain}.log`, 'utf8');
-        await prisma.projects.update({
-            where: {
-                id: subDomain
-            },
-            data: {
-                logs: logs
-            }
-        })
-        // remove the file after updating
-        await fs.rmSync(`./../logs/${subDomain}.log`, {
-            force: true
-        });
-        console.log(`Added logs to the database for ${subDomain}`);
+        if (!isDeployed) {
+            console.log(`No project found for ${subDomain}`);
+            return;
+        }
+        if (isDeployed.deployed === false) {
+            const logPath = `./../logs/${subDomain}.log`;
+            const logs = fs.readFileSync(logPath, 'utf8');
+            await prisma.projects.update({
+                where: { id: subDomain },
+                data: { 
+                    logs: logs,
+                    deployed: true
+                }
+            });
+            fs.unlinkSync(logPath);
+            console.log(`Added logs to the database and marked as deployed for ${subDomain}`);
+            return;
+        }
+        else {
+            const project = await prisma.projects.findUnique({
+                where: { id: subDomain },
+            });
+            console.log(project!.logs);
+            fs.writeFileSync(`./../logs/${subDomain}.log`, project!.logs);
+            return;
+        }
     } catch (error: any) {
         console.error(`Error fetching ${s3Key}:`, error);
         if (error.code === 'NoSuchKey') {
